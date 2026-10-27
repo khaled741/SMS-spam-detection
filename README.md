@@ -1,85 +1,54 @@
 # SMS spam detection — baseline
 
-This is the starting point for our SMS spam robustness project. I trained two classifiers on the UCI SMS Spam Collection and saved the models, the dataset split, and their validation results. The text-evasion and defense experiments have not been done yet.
+This repository contains the baseline for our SMS spam robustness project: the prepared SMS data, two trained classifiers, and their validation results. Both models are already saved in `models/`, so they can be used for text-evasion and defense experiments without repeating the baseline training. Attack and defense results are not included yet.
 
-**You do not need to retrain the models to start the next experiments.** The saved pipelines in `models/` are ready to use.
+## Files
 
-## What's in the repository
-
-| File | Purpose |
+| File | Description |
 | --- | --- |
-| `data/processed/sms_splits.csv` | The message text, true label (`spam` or `ham`), `message_id`, and fixed `train` / `validation` / `test` assignment. |
-| `data/processed/dataset_manifest.json` | Dataset source, cleaning counts, split counts and random seed. |
-| `models/baseline_multinomial_naive_bayes.joblib` | Trained word-level TF-IDF + Naive Bayes pipeline. |
-| `models/baseline_logistic_regression.joblib` | Trained word-level TF-IDF + Logistic Regression pipeline. |
-| `results/predictions_validation.csv` | Predictions and spam probabilities for each validation message, for both models. |
-| `results/metrics_validation.csv` | Summary scores from the baseline validation run. |
-| `run_baseline.py` | Rebuilds the dataset split, trains both models, and exports results and charts. You normally don't need to run it. |
-| `verify_outputs.py` | Checks whether the saved data, models, predictions and metrics match, without retraining. |
-| `requirements.txt` | Python dependencies. |
-| `.gitignore` | Keeps local environments, raw downloads and temporary files out of Git. |
+| `data/processed/sms_splits.csv` | The SMS texts, true labels (`spam` / `ham`), message IDs, and fixed `train`, `validation`, and `test` assignments. |
+| `data/processed/dataset_manifest.json` | Dataset source, cleaning summary, split counts, and random seed. |
+| `models/baseline_multinomial_naive_bayes.joblib` | Trained TF-IDF + Naive Bayes model. |
+| `models/baseline_logistic_regression.joblib` | Trained TF-IDF + Logistic Regression model. |
+| `results/predictions_validation.csv` | Predictions and spam probabilities for each validation message from both models. |
+| `results/metrics_validation.csv` | Summary of the baseline validation results. |
+| `run_baseline.py` | Recreates the baseline from scratch: prepares the data, trains both models, and generates results and confusion-matrix charts. It is not needed for using the saved models. |
+| `verify_outputs.py` | Checks that the saved data, models, predictions, and metrics are consistent, without retraining. |
+| `requirements.txt` | Python packages and versions used for the baseline. |
+| `.gitignore` | Tells Git to ignore local files such as Python environments, downloaded raw data, and caches. It does not delete them from the computer. |
 
-## Results so far
+## Baseline results
 
-The downloaded UCI dataset had 5,574 rows. After removing 403 exact duplicate messages, 5,171 unique messages remained. The fixed split (seed 42) contains 3,102 training, 1,034 validation, and 1,035 final-test messages.
+The UCI SMS Spam Collection contains 5,574 rows. After removing 403 exact duplicates, 5,171 unique messages remained. They were divided into 3,102 training, 1,034 validation, and 1,035 test messages, with a fixed random seed of 42.
 
-These results come from **validation only**, before any attacks or defenses:
+The figures below are from the **validation set only**, before any attacks or defenses:
 
-| Model | Accuracy | Spam recall | Spam F1 | False positives (ham) |
+| Model | Accuracy | Spam recall | Spam F1 | False positives |
 | --- | ---: | ---: | ---: | ---: |
 | Naive Bayes | 95.16% | 61.54% | 76.19% | 0 |
 | Logistic Regression | 96.71% | 74.62% | 85.09% | 1 |
 
-Of the 130 spam messages in validation, Naive Bayes detected 80 and Logistic Regression detected 97. Accuracy is high partly because there are many more legitimate messages than spam, so spam recall is useful to look at separately.
+**Spam recall** is the share of actual spam messages detected by the model. Out of 130 spam messages in validation, Naive Bayes detected 80 and Logistic Regression detected 97. Accuracy measures correct predictions across both spam and legitimate messages.
 
-## Getting started
+## Opening and checking the project on Windows
 
-Download or clone the repository, open a terminal in the project folder, and use Python 3.13:
+Download the repository using **Code → Download ZIP** on GitHub, then extract it anywhere on your computer. Open the extracted folder containing `README.md` and `requirements.txt`. In Windows File Explorer, type `cmd` in the address bar and press Enter to open Command Prompt in that folder.
 
-```bash
-python -m pip install -r requirements.txt
-python verify_outputs.py
+With **Python 3.13** installed, the following commands install the required packages and check the saved files:
+
+```cmd
+py -3.13 -m pip install -r requirements.txt
+py -3.13 verify_outputs.py
 ```
 
-The verification checks the files already included in the repository. It does **not** train the models again or score the final test set.
+The two trained models are already included under `models/`. The check does not retrain them or evaluate the final test set.
 
-To load one of the saved models, you can use:
+## For the next experiments
 
-```python
-import joblib
-import pandas as pd
+The saved models, fixed data splits, and validation predictions provide a common starting point for the text-evasion and defense work. The `train` split is available for defense training, while the `validation` split can be used for comparing experimental results. The `test` split has not been evaluated and is reserved for the final evaluation.
 
-data = pd.read_csv("data/processed/sms_splits.csv")
-model = joblib.load("models/baseline_logistic_regression.joblib")
-validation_spam = data[(data["split"] == "validation") & (data["label"] == "spam")]
-print(model.predict(validation_spam["text"].head(5)))
-```
+New experimental outputs can be saved separately, keeping the original baseline models and results available for comparison.
 
-Only load the `.joblib` files from this trusted repository, as the joblib format should not be opened from unknown sources.
+## Data source
 
-## Next steps: attacks and defense
-
-**Text-evasion tests:** use `validation` messages to select spam examples, make controlled text changes, and compare the same saved model's predictions before and after the edits. Keep the original `message_id` for each changed message so results can be matched.
-
-**Defense training:** use **only** `train` messages and modified copies of training spam to retrain a separate model. Compare the original and defended models on the same validation messages and fixed edited versions. Also check false alarms on ordinary (`ham`) messages.
-
-Please keep the `test` partition untouched until the group has finalized the attack rules and defense setup. Don't overwrite the baseline model files or validation results when adding new experiments; save new outputs separately.
-
-## Optional: reproduce the baseline and view charts
-
-If you want to recreate the baseline from the original dataset, run:
-
-```bash
-python run_baseline.py
-```
-
-The script downloads the public UCI dataset if it's not already in `data/raw/`, then rebuilds the saved models and outputs. It also creates two confusion-matrix images under `results/`:
-
-- `confusion_matrix_multinomial_naive_bayes.png`
-- `confusion_matrix_logistic_regression.png`
-
-Those PNGs are **generated locally**; they are not required for the attack and defense work and aren't committed here. Running the script regenerates the baseline artifacts, so keep a copy of any separate experimental changes.
-
-## Dataset
-
-UCI SMS Spam Collection — Almeida & Hidalgo (2011). [Dataset page](https://archive.ics.uci.edu/dataset/228/sms+spam+collection) · [DOI](https://doi.org/10.24432/C5CC84). The dataset is licensed under **CC BY 4.0** and is included with attribution. It contains **SMS messages**, not emails.
+UCI SMS Spam Collection — Almeida & Hidalgo (2011). [Dataset page](https://archive.ics.uci.edu/dataset/228/sms+spam+collection) · [DOI](https://doi.org/10.24432/C5CC84). Dataset license: **CC BY 4.0**. The data contains SMS messages, not emails.
