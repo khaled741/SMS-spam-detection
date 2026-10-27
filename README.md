@@ -12,10 +12,10 @@ This repository contains the baseline for the SMS spam detection project: the pr
 | `models/baseline_logistic_regression.joblib` | Trained TF-IDF + Logistic Regression model. |
 | `results/predictions_validation.csv` | Predictions and spam probabilities for each validation message from both models. |
 | `results/metrics_validation.csv` | Summary of the baseline validation results. |
-| `run_baseline.py` | Recreates the baseline from scratch: prepares the data, trains both models, and generates results and confusion-matrix charts. It is not needed for using the saved models. |
+| `run_baseline.py` | Recreates the baseline from scratch, including data preparation, model training, results, and charts. There is no need to run it for the next experiments, as both trained models are already available in `models/`. |
 | `verify_outputs.py` | Checks that the saved data, models, predictions, and metrics are consistent, without retraining. |
 | `requirements.txt` | Python packages and versions used for the baseline. |
-| `.gitignore` | Tells Git to ignore local files such as Python environments, downloaded raw data, and caches. It does not delete them from the computer. |
+| `.gitignore` | Lists local files that Git should ignore, such as temporary files and Python environments. |
 
 ## Baseline results
 
