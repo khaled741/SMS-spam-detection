@@ -1,0 +1,39 @@
+{
+  "dataset": "UCI SMS Spam Collection (Almeida & Hidalgo, 2011)",
+  "official_page": "https://archive.ics.uci.edu/dataset/228/sms+spam+collection",
+  "license": "CC BY 4.0; attribution required",
+  "source": "UCI SMS Spam Collection (official download)",
+  "source_sha256": "1587ea43e58e82b14ff1f5425c88e17f8496bfcdb67a583dbff9eefaf9963ce3",
+  "prepared_at_utc": "2026-10-27T11:34:09+00:00",
+  "random_seed": 42,
+  "split_fraction": {
+    "train": 0.6,
+    "validation": 0.2,
+    "test": 0.2
+  },
+  "split_counts": {
+    "test": {
+      "ham": 904,
+      "spam": 131
+    },
+    "train": {
+      "ham": 2710,
+      "spam": 392
+    },
+    "validation": {
+      "ham": 904,
+      "spam": 130
+    }
+  },
+  "data_summary": {
+    "raw_message_count": 5574,
+    "deduplicated_message_count": 5171,
+    "exact_duplicate_rows_removed": 403,
+    "class_counts_after_deduplication": {
+      "ham": 4518,
+      "spam": 653
+    }
+  },
+  "rule": "Drop exact-text duplicates BEFORE stratified splitting; conflicting labels cause an error.",
+  "leakage_prevention": "Pipelines and TF-IDF are fit on train only. Validation for development. Test withheld."
+}
