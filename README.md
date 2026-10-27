@@ -1,6 +1,6 @@
 # SMS spam detection — baseline
 
-This repository contains the baseline for our SMS spam robustness project: the prepared SMS data, two trained classifiers, and their validation results. Both models are already saved in `models/`, so they can be used for text-evasion and defense experiments without repeating the baseline training. Attack and defense results are not included yet.
+This repository contains the baseline for the SMS spam detection project: the prepared SMS data, two trained classifiers, and their validation results. Both models are already saved in `models/`, so they can be used for text-evasion and defense experiments without repeating the baseline training. Attack and defense results are not included yet.
 
 ## Files
 
