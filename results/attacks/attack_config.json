@@ -1,0 +1,86 @@
+{
+  "experiment": "two fixed text-evasion rules on validation spam (no defense training)",
+  "random_seed_used_for_existing_splits": 42,
+  "input_split_sha256": "facb801db182de1654beb28492b015f9dffffd04d1ae68d122c9e484d458be0b",
+  "baseline_predictions_sha256": "43006ae162a3d75ad8bd648f53dae4054568036db7fff6b9ccd0c1465c7d5153",
+  "baseline_model_sha256": {
+    "multinomial_naive_bayes": "2df699d33dc66932801adcbf2e97e3473b86964881f3decad445780261ce8589",
+    "logistic_regression": "c043e879a9784a7bf477f535b275eff0eacbd378d3eea75c96ccc0d9a1b916f2"
+  },
+  "models": [
+    "multinomial_naive_bayes",
+    "logistic_regression"
+  ],
+  "attack_types": [
+    "character_substitution",
+    "punctuation_insertion"
+  ],
+  "candidate_triggers_predeclared": [
+    "free",
+    "win",
+    "prize",
+    "claim",
+    "cash",
+    "urgent",
+    "call",
+    "reply",
+    "won",
+    "award",
+    "selected",
+    "guaranteed",
+    "mobile",
+    "collect",
+    "voucher",
+    "offer",
+    "awarded",
+    "winner",
+    "bonus",
+    "gift",
+    "stop",
+    "text",
+    "contact"
+  ],
+  "enabled_triggers_confirmed_in_training_spam": [
+    "free",
+    "win",
+    "prize",
+    "claim",
+    "cash",
+    "urgent",
+    "call",
+    "reply",
+    "won",
+    "award",
+    "selected",
+    "guaranteed",
+    "mobile",
+    "collect",
+    "voucher",
+    "offer",
+    "awarded",
+    "winner",
+    "bonus",
+    "gift",
+    "stop",
+    "text",
+    "contact"
+  ],
+  "trigger_matching": "First whole word found left to right, case insensitive; preserves all other message text",
+  "substitution_map": {
+    "a": "4",
+    "e": "3",
+    "i": "1",
+    "o": "0",
+    "s": "5"
+  },
+  "punctuation_rule": "Insert a dot between each character of the first matching trigger word",
+  "modified_message_semantics": "Rule-based changes only; manual review of fixed sample still required",
+  "test_partition_used": false,
+  "data_partitions_for_model_prediction": [
+    "validation"
+  ],
+  "notes": "Robust recall is computed on CHANGED validation spam only; cannot measure ham false positives from spam-only attack pool.",
+  "source_sha256_note": "The input CSV SHA-256 values above were recorded on the Windows machine using CRLF line endings. The GitHub baseline CSVs contain the same records but use LF endings; their byte hashes differ.",
+  "github_input_split_sha256": "6a9e21c3c743921119548d6bc0e27b26711bdc5fd4531e293d4df522ae9c2f36",
+  "github_baseline_predictions_sha256": "fc02cc1ca0203238e2f4db6eb4c3de5afda7fa6f162f97e44ee14a3bf58d4785"
+}
