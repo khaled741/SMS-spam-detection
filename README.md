@@ -1,6 +1,6 @@
 # SMS spam detection — baseline
 
-This repository contains the baseline for the SMS spam detection project: the prepared SMS data, two trained classifiers, and their validation results. Both models are already saved in `models/`, so they can be used for text-evasion and defense experiments without repeating the baseline training. Attack and defense results are not included yet.
+This repository contains the baseline for the SMS spam detection project: the prepared SMS data, two trained classifiers, and their validation results. Both models are saved in `models/`. An initial set of text-evasion experiments is also available below; defense and final-test results have not been added yet.
 
 ## Files
 
@@ -42,6 +42,24 @@ py -3.13 verify_outputs.py
 ```
 
 The two trained models are already included under `models/`. The check does not retrain them or evaluate the final test set.
+
+## Text-evasion experiments (validation only)
+
+The `attacks.py` script applies two fixed changes to validation spam: character substitution (for example, `free` → `fr33`) and punctuation insertion (`free` → `f.r.e.e`). It uses the already trained models and does not retrain them.
+
+Files under `results/attacks/`:
+
+| File | Content |
+| --- | --- |
+| `attack_variants_validation.csv` | Original and modified messages, their source IDs, attack names, and whether a change was made. |
+| `attack_predictions_validation.csv` | Model predictions and spam probabilities before and after each change. |
+| `attack_metrics_validation.csv` | Detection rates and counts on the changed-message pool. |
+| `attack_config.json` | The fixed attack rules, keywords, and details of the run. |
+| `attack_review_samples.csv` | A small set of messages for manual review; the review column has not been filled in yet. |
+
+Each attack changed **113 of 130** validation spam messages. On those 113 messages, Naive Bayes detected **78 before** and **69 after** the changes; Logistic Regression detected **94 before** and **76 after**. Both attack types produced the same predictions and probabilities with the current word-level TF-IDF setup. This is an observed result, not two independently different improvements.
+
+These are **preliminary results**. The modified-message sample still needs to be checked for meaning, especially words used in opt-out instructions such as `STOP`. No final test data or defended models were used.
 
 ## For the next experiments
 
