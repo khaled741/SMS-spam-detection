@@ -1,0 +1,41 @@
+{
+  "dataset_partition_used_for_variants": "validation spam only",
+  "trigger_selection_partition": "train spam only",
+  "fixed_triggers_in_order": [
+    "free",
+    "win",
+    "prize",
+    "claim",
+    "cash",
+    "urgent",
+    "call",
+    "reply",
+    "mobile",
+    "won"
+  ],
+  "training_spam_message_counts_with_each_trigger": {
+    "free": 83,
+    "win": 29,
+    "prize": 42,
+    "claim": 57,
+    "cash": 34,
+    "urgent": 35,
+    "call": 177,
+    "reply": 53,
+    "mobile": 65,
+    "won": 38
+  },
+  "character_substitution_map": {
+    "a": "4",
+    "e": "3",
+    "i": "1",
+    "o": "0",
+    "s": "5",
+    "t": "7"
+  },
+  "word_matching": "case-insensitive whole words, first trigger occurrence in message",
+  "punctuation_rule": "insert '.' between adjacent characters in first trigger",
+  "unchanged_messages": "retained and counted as not changed; excluded from robust recall",
+  "structurally_valid_changed": "automatic mechanical rule check only, not a human semantic review",
+  "test_evaluation": "not performed"
+}
