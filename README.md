@@ -1,72 +1,82 @@
-# SMS spam detection — baseline
+# SMS spam detection — baseline and validation attack tests
 
-This repository contains the baseline for the SMS spam detection project: the prepared SMS data, two trained classifiers, and their validation results. Both models are saved in `models/`. An initial set of text-evasion experiments is also available below; defense and final-test results have not been added yet.
+This repository contains the prepared SMS dataset, two trained spam classifiers, and their validation results for the SMS spam detection project. It also includes preliminary tests of two text-evasion methods. The saved models are ready to use; retraining the baseline is not necessary to work with them.
 
-## Files
+The attack results are **preliminary**. Semantic review, defense training and final-test evaluation are not yet complete.
 
-| File | Description |
+## Files in the repository
+
+### Data and baseline
+
+| File | Contents |
 | --- | --- |
-| `data/processed/sms_splits.csv` | The SMS texts, true labels (`spam` / `ham`), message IDs, and fixed `train`, `validation`, and `test` assignments. |
-| `data/processed/dataset_manifest.json` | Dataset source, cleaning summary, split counts, and random seed. |
-| `models/baseline_multinomial_naive_bayes.joblib` | Trained TF-IDF + Naive Bayes model. |
-| `models/baseline_logistic_regression.joblib` | Trained TF-IDF + Logistic Regression model. |
-| `results/predictions_validation.csv` | Predictions and spam probabilities for each validation message from both models. |
-| `results/metrics_validation.csv` | Summary of the baseline validation results. |
-| `run_baseline.py` | Recreates the baseline from scratch, including data preparation, model training, results, and charts. There is no need to run it for the next experiments, as both trained models are already available in `models/`. |
-| `verify_outputs.py` | Checks that the saved data, models, predictions, and metrics are consistent, without retraining. |
-| `requirements.txt` | Python packages and versions used for the baseline. |
-| `.gitignore` | Lists local files that Git should ignore, such as temporary files and Python environments. |
+| `data/processed/sms_splits.csv` | Cleaned messages, labels, stable message IDs, and the fixed `train`, `validation`, and `test` assignments. |
+| `data/processed/dataset_manifest.json` | Dataset source, cleaning and split counts, and seed 42. |
+| `models/baseline_multinomial_naive_bayes.joblib` | Saved TF-IDF + Naive Bayes classifier. |
+| `models/baseline_logistic_regression.joblib` | Saved TF-IDF + Logistic Regression classifier. |
+| `results/predictions_validation.csv` | Original predictions and spam probabilities for both models on validation messages. |
+| `results/metrics_validation.csv` | Baseline validation scores. |
+| `run_baseline.py` | Recreates the baseline from scratch: cleaning, splitting, training, metrics and charts. The trained models are already saved in `models/`, so this script is not needed to use them. |
+| `verify_outputs.py` | Checks that the saved baseline data, models, predictions and metrics agree, without retraining. |
+| `requirements.txt` | Python dependencies and versions. |
+| `.gitignore` | Lists local files and folders that Git should ignore. |
 
-## Baseline results
+### Text-evasion experiments
 
-The UCI SMS Spam Collection contains 5,574 rows. After removing 403 exact duplicates, 5,171 unique messages remained. They were divided into 3,102 training, 1,034 validation, and 1,035 test messages, with a fixed random seed of 42.
+The **reviewed preliminary run** uses `attacks.py` and the files in `results/attacks/`. It changes spam messages in the **validation** split only. The two fixed methods are character substitution (for example, `free` → `fr33`) and punctuation insertion (`free` → `f.r.e.e`).
 
-The figures below are from the **validation set only**, before any attacks or defenses:
+| File | Contents |
+| --- | --- |
+| `attacks.py` | Runs both text modifications against the two saved baseline models and generates the validation results. No retraining is performed. |
+| `results/attacks/attack_variants_validation.csv` | Original and modified messages, source IDs, attack type and change status. |
+| `results/attacks/attack_predictions_validation.csv` | Predictions and spam probabilities before and after modification. |
+| `results/attacks/attack_metrics_validation.csv` | Counts, coverage, detection rates and conditional evasion rates. |
+| `results/attacks/attack_config.json` | Keywords, substitution rules and run details. |
+| `results/attacks/attack_review_samples.csv` | 20 examples prepared for a manual check of whether the spam meaning is preserved; the review column is still blank. |
+
+**Separate earlier implementation:** `run_attacks.py`, `results/attack_variants_validation.csv`, and `results/attack_settings.json` belong to a different version of the text-evasion experiment, with a shorter keyword list and a different character map. They are not the source of the results below. Please **do not mix** the two versions' generated files or metrics; one ruleset needs to be agreed upon for the final comparison.
+
+## Results available so far
+
+The UCI dataset started with 5,574 rows. Removing 403 exact duplicates left **5,171 unique SMS messages**: 3,102 training, 1,034 validation and 1,035 test.
+
+Baseline performance on **all 1,034 validation messages**, before modification:
 
 | Model | Accuracy | Spam recall | Spam F1 | False positives |
 | --- | ---: | ---: | ---: | ---: |
 | Naive Bayes | 95.16% | 61.54% | 76.19% | 0 |
 | Logistic Regression | 96.71% | 74.62% | 85.09% | 1 |
 
-**Spam recall** is the share of actual spam messages detected by the model. Out of 130 spam messages in validation, Naive Bayes detected 80 and Logistic Regression detected 97. Accuracy measures correct predictions across both spam and legitimate messages.
+Spam recall is the share of actual spam messages detected. Out of 130 validation spam messages, Naive Bayes detected 80 and Logistic Regression detected 97.
 
-## Opening and checking the project on Windows
+In the **reviewed preliminary attack run**, each attack changed **113 of the 130** validation spam messages. Results below are restricted to those **113 changed messages**, not the whole validation set:
 
-Download the repository using **Code → Download ZIP** on GitHub, then extract it anywhere on your computer. Open the extracted folder containing `README.md` and `requirements.txt`. In Windows File Explorer, type `cmd` in the address bar and press Enter to open Command Prompt in that folder.
+| Model | Detected before change | Detected after change | Newly missed |
+| --- | ---: | ---: | ---: |
+| Naive Bayes | 78 / 113 | 69 / 113 | 9 |
+| Logistic Regression | 94 / 113 | 76 / 113 | 18 |
 
-With **Python 3.13** installed, the following commands install the required packages and check the saved files:
+Both attack methods produced the same predictions and probabilities in this run, despite changing the text differently. These results describe the observed model behavior; they do not establish that all modified messages are valid attacks. The manual sample review is still open, especially for edits affecting words such as `STOP` or `reply`.
+
+## Opening the saved project on Windows
+
+Download the repository using **Code → Download ZIP**, extract it, and open the extracted project folder (the one containing `README.md` and `requirements.txt`). In Windows File Explorer, type `cmd` in the address bar and press Enter.
+
+With Python 3.13 installed:
 
 ```cmd
 py -3.13 -m pip install -r requirements.txt
 py -3.13 verify_outputs.py
 ```
 
-The two trained models are already included under `models/`. The check does not retrain them or evaluate the final test set.
+These commands install the required packages and check the existing baseline files. They do not retrain models or run a final-test evaluation.
 
-## Text-evasion experiments (validation only)
+## Current handoff status
 
-The `attacks.py` script applies two fixed changes to validation spam: character substitution (for example, `free` → `fr33`) and punctuation insertion (`free` → `f.r.e.e`). It uses the already trained models and does not retrain them.
+**Available now:** fixed data splits, both baseline models, baseline validation predictions and metrics, two preliminary text-evasion implementations, and results from the reviewed validation attack run.
 
-Files under `results/attacks/`:
+**Not completed yet:** manual acceptance review of attack examples, agreement on a single attack configuration, augmented-training defense models, defended-model comparisons, and frozen final-test evaluation. The `test` split has not been scored and remains reserved for the final evaluation. New results can be saved separately so the baseline files remain available for comparison.
 
-| File | Content |
-| --- | --- |
-| `attack_variants_validation.csv` | Original and modified messages, their source IDs, attack names, and whether a change was made. |
-| `attack_predictions_validation.csv` | Model predictions and spam probabilities before and after each change. |
-| `attack_metrics_validation.csv` | Detection rates and counts on the changed-message pool. |
-| `attack_config.json` | The fixed attack rules, keywords, and details of the run. |
-| `attack_review_samples.csv` | A small set of messages for manual review; the review column has not been filled in yet. |
+## Dataset source
 
-Each attack changed **113 of 130** validation spam messages. On those 113 messages, Naive Bayes detected **78 before** and **69 after** the changes; Logistic Regression detected **94 before** and **76 after**. Both attack types produced the same predictions and probabilities with the current word-level TF-IDF setup. This is an observed result, not two independently different improvements.
-
-These are **preliminary results**. The modified-message sample still needs to be checked for meaning, especially words used in opt-out instructions such as `STOP`. No final test data or defended models were used.
-
-## For the next experiments
-
-The saved models, fixed data splits, and validation predictions provide a common starting point for the text-evasion and defense work. The `train` split is available for defense training, while the `validation` split can be used for comparing experimental results. The `test` split has not been evaluated and is reserved for the final evaluation.
-
-New experimental outputs can be saved separately, keeping the original baseline models and results available for comparison.
-
-## Data source
-
-UCI SMS Spam Collection — Almeida & Hidalgo (2011). [Dataset page](https://archive.ics.uci.edu/dataset/228/sms+spam+collection) · [DOI](https://doi.org/10.24432/C5CC84). Dataset license: **CC BY 4.0**. The data contains SMS messages, not emails.
+UCI SMS Spam Collection — Almeida & Hidalgo (2011). [Dataset page](https://archive.ics.uci.edu/dataset/228/sms+spam+collection) · [DOI](https://doi.org/10.24432/C5CC84). Licensed under **CC BY 4.0**. This dataset contains SMS messages, not emails.
