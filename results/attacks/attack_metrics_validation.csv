@@ -1,0 +1,7 @@
+<PARSED TEXT FOR SHEET: 1 / 1 TABS
+TAB NAME: gh-attack-staging-metrics.csv>
+index,model,attack_type,split,spam_considered,messages_changed,messages_unchanged,attack_coverage,baseline_detected_on_changed,attacked_detected_on_changed,baseline_recall_on_changed,robust_recall_on_changed,newly_evaded,newly_detected,conditional_evasion_rate
+0,multinomial_naive_bayes,character_substitution,validation,130,113,17,0.8692307692307693,78,69,0.6902654867256637,0.6106194690265486,9,0,0.1153846153846153
+1,multinomial_naive_bayes,punctuation_insertion,validation,130,113,17,0.8692307692307693,78,69,0.6902654867256637,0.6106194690265486,9,0,0.1153846153846153
+2,logistic_regression,character_substitution,validation,130,113,17,0.8692307692307693,94,76,0.831858407079646,0.672566371681416,18,0,0.1914893617021276
+3,logistic_regression,punctuation_insertion,validation,130,113,17,0.8692307692307693,94,76,0.831858407079646,0.672566371681416,18,0,0.1914893617021276
